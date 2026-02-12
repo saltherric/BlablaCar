@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets/bla_button.dart';
+import '../../theme/theme.dart';
 
 class BlaButtonTestScreen extends StatelessWidget {
   const BlaButtonTestScreen({super.key});
@@ -9,11 +10,10 @@ class BlaButtonTestScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("BlaButton Test")),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(BlaSpacings.m),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Primary Button
             BlaButton(
               label: "Primary Button",
               onPressed: () {
@@ -21,9 +21,8 @@ class BlaButtonTestScreen extends StatelessWidget {
               },
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: BlaSpacings.m),
 
-            // Secondary Button
             BlaButton(
               label: "Secondary Button",
               isPrimary: false,
@@ -32,9 +31,8 @@ class BlaButtonTestScreen extends StatelessWidget {
               },
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: BlaSpacings.m),
 
-            // With Icon
             BlaButton(
               label: "Search Ride",
               icon: Icons.search,
@@ -43,26 +41,14 @@ class BlaButtonTestScreen extends StatelessWidget {
               },
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: BlaSpacings.m),
 
-            // Secondary + Icon
             BlaButton(
               label: "Filter",
               isPrimary: false,
               icon: Icons.filter_list,
               onPressed: () {
                 print("Filter pressed");
-              },
-            ),
-
-            const SizedBox(height: 16),
-
-            // Disabled Button
-            BlaButton(
-              label: "Disabled Button",
-              isEnabled: false,
-              onPressed: () {
-                print("This should NOT print");
               },
             ),
           ],

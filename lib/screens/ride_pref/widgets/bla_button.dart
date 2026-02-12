@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../../theme/theme.dart';
 
 class BlaButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final bool isPrimary;
   final IconData? icon;
-  final bool isEnabled;
 
   const BlaButton({
     super.key,
@@ -13,37 +13,49 @@ class BlaButton extends StatelessWidget {
     required this.onPressed,
     this.isPrimary = true,
     this.icon,
-    this.isEnabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = isPrimary ? Colors.blue : Colors.white;
+    final backgroundColor = isPrimary ? BlaColors.primary : BlaColors.white;
 
-    final textColor = isPrimary ? Colors.white : Colors.blue;
+    final textColor = isPrimary ? BlaColors.white : BlaColors.primary;
 
-    final border = isPrimary ? null : BorderSide(color: Colors.blue, width: 1);
+    final borderSide = isPrimary
+        ? BorderSide.none
+        : BorderSide(color: BlaColors.primary);
 
-    return ElevatedButton(
-      onPressed: isEnabled ? onPressed : null,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
-        side: border,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, color: textColor),
-            const SizedBox(width: 8),
-          ],
-          Text(
-            label,
-            style: TextStyle( color: textColor),
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor,
+          elevation: 0,
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(BlaSpacings.radius),
+            side: borderSide,
           ),
-        ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(
+                icon, 
+                color: textColor
+              ),
+              SizedBox(width: BlaSpacings.s),
+            ],
+            Text(
+              label,
+              style: BlaTextStyles.button.copyWith(
+                color: textColor,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
