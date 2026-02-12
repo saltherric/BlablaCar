@@ -31,7 +31,7 @@ class RidesService {
     }
     if (seatRequested != null) {
       result = result
-          .where((ride) => ride.remainingSeats >= seatRequested).toList();
+          .where((ride) => ride.availableSeats >= seatRequested).toList();
     }
     return result;
   }
