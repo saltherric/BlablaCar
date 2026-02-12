@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../model/ride_pref/ride_pref.dart';
+import '../../../models/ride_pref/ride_pref.dart';
 import '../../../theme/theme.dart';
 import '../../../utils/date_time_util.dart';
 

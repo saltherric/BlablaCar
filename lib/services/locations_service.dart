@@ -1,6 +1,6 @@
 
 import '../dummy_data/dummy_data.dart';
-import '../model/ride/locations.dart';
+import '../models/ride/locations.dart';
 
 ////
 ///   This service handles:

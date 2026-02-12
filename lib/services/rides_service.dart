@@ -1,6 +1,6 @@
 import '../dummy_data/dummy_data.dart';
-import '../model/ride/locations.dart';
-import '../model/ride/ride.dart';
+import '../models/ride/locations.dart';
+import '../models/ride/ride.dart';
 
 class RidesService {
   static List<Ride> availableRides = fakeRides; // TODO for now fake data
@@ -18,7 +18,7 @@ class RidesService {
   //
   static List<Ride> _filterBySeatRequested(int requestedSeat) {
     return availableRides
-        .where((ride) => ride.remainingSeats == requestedSeat).toList();
+        .where((ride) => ride.availableSeats >= requestedSeat).toList();
   }
 
   //  filter the rides   with several optional criteria (flexible filter options)

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../model/ride_pref/ride_pref.dart';
+import '../../models/ride_pref/ride_pref.dart';
 import '../../services/ride_prefs_service.dart';
 import '../../theme/theme.dart';
 
