@@ -43,47 +43,52 @@ class _RidePrefScreenState extends State<RidePrefScreen> {
   }
 
   Widget _buildForeground() {
-    return Column(
-      children: [
-        SizedBox(height: 16),
-        Text(
-          "Your pick of rides at low price",
-          style: BlaTextStyles.heading.copyWith(color: Colors.white),
-        ),
-        SizedBox(height: 100),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: BlaSpacings.xxl),
-          decoration: BoxDecoration(
-            color: Colors.white, // White background
-            borderRadius: BorderRadius.circular(16), // Rounded corners
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(height: 16),
+          Text(
+            "Your pick of rides at low price",
+            style: BlaTextStyles.heading.copyWith(color: Colors.white),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 2.1 Display the Form to input the ride preferences
-              RidePrefForm(initRidePref: RidePrefService.currentRidePref),
-              SizedBox(height: BlaSpacings.m),
+          SizedBox(height: 100),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: BlaSpacings.xxl),
+            decoration: BoxDecoration(
+              color: Colors.white, // White background
+              borderRadius: BorderRadius.circular(16), // Rounded corners
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 2.1 Display the Form to input the ride preferences
+                RidePrefForm(
+                  initRidePref: RidePrefService.currentRidePref,
+                  onSubmit: onRidePrefSelected,
+                ),
+                SizedBox(height: BlaSpacings.m),
 
-              // 2.2 Optionally display the history of past preferences
-              SizedBox(
-                height: 200, // Set a fixed height
-                child: ListView.builder(
-                  shrinkWrap: true, // Fix ListView height issue
-                  physics: AlwaysScrollableScrollPhysics(),
-                  itemCount: RidePrefService.ridePrefsHistory.length,
-                  itemBuilder: (ctx, index) => RidePrefHistoryTile(
-                    ridePref: RidePrefService.ridePrefsHistory[index],
-                    onTap: () => onRidePrefSelected(
-                      RidePrefService.ridePrefsHistory[index],
+                // 2.2 Optionally display the history of past preferences
+                SizedBox(
+                  height: 200, // Set a fixed height
+                  child: ListView.builder(
+                    shrinkWrap: true, // Fix ListView height issue
+                    physics: AlwaysScrollableScrollPhysics(),
+                    itemCount: RidePrefService.ridePrefsHistory.length,
+                    itemBuilder: (ctx, index) => RidePrefHistoryTile(
+                      ridePref: RidePrefService.ridePrefsHistory[index],
+                      onTap: () => onRidePrefSelected(
+                        RidePrefService.ridePrefsHistory[index],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

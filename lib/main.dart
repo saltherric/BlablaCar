@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: appTheme,
       home: Scaffold(
-        // body: RidePrefScreen(),
-        body: BlaButtonTestScreen(),
+        body: RidePrefScreen(),
+        // body: BlaButtonTestScreen(),
         ),
     );
   }
