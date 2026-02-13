@@ -6,6 +6,7 @@ import '../../../services/locations_service.dart';
 import '../../../theme/theme.dart';
 import '../../../utils/date_time_util.dart';
 import 'bla_button.dart';
+import '../../location/location_picker_screen.dart';
 
 ///
 /// A Ride Preference From is a view to select:
@@ -76,41 +77,26 @@ class _RidePrefFormState extends State<RidePrefForm> {
     widget.onSubmit(pref);
   }
 
-  Future<Location?> pickLocation(String title) async {
-    return showDialog<Location>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text(title),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: ListView(
-              shrinkWrap: true,
-              children: LocationsService.availableLocations
-                  .map(
-                    (loc) => ListTile(
-                      title: Text(loc.name),
-                      subtitle: Text(loc.country.name),
-                      onTap: () => Navigator.pop(ctx, loc),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
-  Future<void> pickDeparture() async {
-    final picked = await pickLocation("Select departure");
+  Future<void> _pickDeparture() async {
+    final picked = await Navigator.push<Location>(
+      context,
+      MaterialPageRoute(builder: (_) => const LocationPickerScreen()),
+    );
+
     if (picked != null) setState(() => departure = picked);
   }
 
-  Future<void> pickArrival() async {
-    final picked = await pickLocation("Select arrival");
-    if (picked != null) setState(() => arrival = picked);
-  }
+
+  Future<void> _pickArrival() async {
+  final picked = await Navigator.push<Location>(
+    context,
+    MaterialPageRoute(builder: (_) => const LocationPickerScreen()),
+  );
+
+  if (picked != null) setState(() => arrival = picked);
+}
+
 
   Future<void> pickDate() async {
     final now = DateTime.now();
@@ -228,7 +214,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
             label: "From",
             value: departure?.name ?? "Select departure",
             icon: Icons.trip_origin,
-            onTap: pickDeparture,
+            onTap: _pickDeparture,
           ),
           const SizedBox(height: BlaSpacings.s),
 
@@ -236,7 +222,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
             label: "To",
             value: arrival?.name ?? "Select arrival",
             icon: Icons.place,
-            onTap: pickArrival,
+            onTap: _pickArrival,
             trailing: IconButton(
               onPressed: switchLocations,
               icon: Icon(Icons.swap_vert, color: BlaColors.iconNormal),
