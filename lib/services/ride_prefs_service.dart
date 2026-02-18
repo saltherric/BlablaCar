@@ -1,5 +1,5 @@
 
-import '../dummy_data/dummy_data.dart';
+import '../data/dummy_data.dart';
 import '../models/ride_pref/ride_pref.dart';
 
 ////

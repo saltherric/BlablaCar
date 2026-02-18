@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../models/ride_pref/ride_pref.dart';
+import '../../../../models/ride_pref/ride_pref.dart';
 import '../../../theme/theme.dart';
-import '../../../utils/date_time_util.dart';
+import '../../../../utils/date_time_util.dart';
 
 ///
 /// This tile represents an item in the list of past entered ride inputs

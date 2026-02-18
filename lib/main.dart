@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screens/ride_pref/ride_pref_screen.dart';
-import 'screens/ride_pref/bla_button_test_screen.dart';
-import 'theme/theme.dart';
+import 'ui/screens/ride_pref/ride_pref_screen.dart';
+// import 'ui/screens/ride_pref/bla_button_test_screen.dart';
+import 'ui/theme/theme.dart';
 
 void main() {
   runApp(const MyApp());

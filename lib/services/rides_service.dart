@@ -1,4 +1,4 @@
-import '../dummy_data/dummy_data.dart';
+import '../data/dummy_data.dart';
 import '../models/ride/locations.dart';
 import '../models/ride/ride.dart';
 
