@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../../../../models/ride/locations.dart';
 import '../../../../models/ride_pref/ride_pref.dart';
-import '../../../../services/locations_service.dart';
-import '../../../theme/theme.dart';
 import '../../../../utils/date_time_util.dart';
+import '../../../theme/theme.dart';
 import '../../../widgets/actions/bla_button.dart';
-import '../../location/location_picker_screen.dart';
+import '../../../widgets/inputs/bla_location_picker.dart';
 
 ///
-/// A Ride Preference From is a view to select:
-///   - A depcarture location
+/// A Ride Preference Form is a view to select:
+///   - A departure location
 ///   - An arrival location
 ///   - A date
 ///   - A number of seats
@@ -37,15 +36,16 @@ class _RidePrefFormState extends State<RidePrefForm> {
   void initState() {
     super.initState();
 
-    final init = widget.initRidePref;
+    final RidePref? init = widget.initRidePref;
+
     if (init != null) {
       departure = init.departure;
       arrival = init.arrival;
       departureDate = init.departureDate;
       requestedSeats = init.requestedSeats;
     } else {
-      departureDate = DateTime.now();
-      requestedSeats = 1;
+      departureDate = DateTime.now(); // Defaults to now
+      requestedSeats = 1; // Default: 1 seat
     }
   }
 
@@ -58,7 +58,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
 
   void switchLocations() {
     setState(() {
-      final tmp = departure;
+      final Location? tmp = departure;
       departure = arrival;
       arrival = tmp;
     });
@@ -67,7 +67,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
   void submit() {
     if (!isValid) return;
 
-    final pref = RidePref(
+    final RidePref pref = RidePref(
       departure: departure!,
       departureDate: departureDate!,
       arrival: arrival!,
@@ -77,61 +77,83 @@ class _RidePrefFormState extends State<RidePrefForm> {
     widget.onSubmit(pref);
   }
 
-
-  Future<void> _pickDeparture() async {
-    final picked = await Navigator.push<Location>(
-      context,
-      MaterialPageRoute(builder: (_) => const LocationPickerScreen()),
+  void onDeparturePressed() async {
+    // 1 - Open teacher's location picker
+    final Location? selected = await Navigator.of(context).push<Location>(
+      MaterialPageRoute(
+        builder: (_) => BlaLocationPicker(initLocation: departure),
+      ),
     );
 
-    if (picked != null) setState(() => departure = picked);
+    // 2 - Update the form if needed
+    if (selected != null) {
+      setState(() {
+        departure = selected;
+      });
+    }
   }
 
+  void onArrivalPressed() async {
+    // 1 - Open teacher's location picker
+    final Location? selected = await Navigator.of(context).push<Location>(
+      MaterialPageRoute(
+        builder: (_) => BlaLocationPicker(initLocation: arrival),
+      ),
+    );
 
-  Future<void> _pickArrival() async {
-  final picked = await Navigator.push<Location>(
-    context,
-    MaterialPageRoute(builder: (_) => const LocationPickerScreen()),
-  );
+    // 2 - Update the form if needed
+    if (selected != null) {
+      setState(() {
+        arrival = selected;
+      });
+    }
+  }
 
-  if (picked != null) setState(() => arrival = picked);
-}
+  void pickDate() async {
+    final DateTime now = DateTime.now();
 
-
-  Future<void> pickDate() async {
-    final now = DateTime.now();
-    final picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: departureDate ?? now,
       firstDate: now.subtract(const Duration(days: 1)),
       lastDate: now.add(const Duration(days: 365)),
     );
-    if (picked != null) setState(() => departureDate = picked);
+
+    if (picked != null) {
+      setState(() => departureDate = picked);
+    }
   }
 
-  Future<void> pickSeats() async {
+  void pickSeats() async {
     int temp = requestedSeats;
 
-    final picked = await showDialog<int>(
+    final int? picked = await showDialog<int>(
       context: context,
-      builder: (ctx) {
+      builder: (BuildContext ctx) {
         return AlertDialog(
           title: const Text("Select seats"),
           content: StatefulBuilder(
-            builder: (ctx, setLocal) => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: temp > 1 ? () => setLocal(() => temp--) : null,
-                  icon: const Icon(Icons.remove),
-                ),
-                Text("$temp", style: BlaTextStyles.heading),
-                IconButton(
-                  onPressed: temp < 8 ? () => setLocal(() => temp++) : null,
-                  icon: const Icon(Icons.add),
-                ),
-              ],
-            ),
+            builder:
+                (BuildContext ctx, void Function(void Function()) setLocal) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: temp > 1
+                            ? () => setLocal(() => temp--)
+                            : null,
+                        icon: const Icon(Icons.remove),
+                      ),
+                      Text("$temp", style: BlaTextStyles.heading),
+                      IconButton(
+                        onPressed: temp < 8
+                            ? () => setLocal(() => temp++)
+                            : null,
+                        icon: const Icon(Icons.add),
+                      ),
+                    ],
+                  );
+                },
           ),
           actions: [
             TextButton(
@@ -147,11 +169,12 @@ class _RidePrefFormState extends State<RidePrefForm> {
       },
     );
 
-    if (picked != null) setState(() => requestedSeats = picked);
+    if (picked != null) {
+      setState(() => requestedSeats = picked);
+    }
   }
 
   Widget inputTile({
-    required String label,
     required String value,
     required IconData icon,
     required VoidCallback onTap,
@@ -177,12 +200,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      label,
-                      style: BlaTextStyles.label.copyWith(
-                        color: BlaColors.textLight,
-                      ),
-                    ),
                     const SizedBox(height: 4),
                     Text(
                       value,
@@ -211,27 +228,22 @@ class _RidePrefFormState extends State<RidePrefForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           inputTile(
-            label: "From",
-            value: departure?.name ?? "Select departure",
+            value: departure?.name ?? "Leaving from",
             icon: Icons.trip_origin,
-            onTap: _pickDeparture,
-          ),
-          const SizedBox(height: BlaSpacings.s),
-
-          inputTile(
-            label: "To",
-            value: arrival?.name ?? "Select arrival",
-            icon: Icons.place,
-            onTap: _pickArrival,
+            onTap: onDeparturePressed,
             trailing: IconButton(
               onPressed: switchLocations,
               icon: Icon(Icons.swap_vert, color: BlaColors.iconNormal),
             ),
           ),
           const SizedBox(height: BlaSpacings.s),
-
           inputTile(
-            label: "Date",
+            value: arrival?.name ?? "Going to",
+            icon: Icons.place,
+            onTap: onArrivalPressed,
+          ),
+          const SizedBox(height: BlaSpacings.s),
+          inputTile(
             value: departureDate == null
                 ? "Select date"
                 : DateTimeUtils.formatDateTime(departureDate!),
@@ -239,21 +251,17 @@ class _RidePrefFormState extends State<RidePrefForm> {
             onTap: pickDate,
           ),
           const SizedBox(height: BlaSpacings.s),
-
           inputTile(
-            label: "Seats",
             value: "$requestedSeats",
             icon: Icons.person,
             onTap: pickSeats,
           ),
           const SizedBox(height: BlaSpacings.l),
-
           Opacity(
             opacity: isValid ? 1 : 0.5,
             child: BlaButton(
               label: "Search",
-              icon: Icons.search,
-              onPressed: isValid ? submit : () {},
+              onPressed: isValid ? submit : null,
             ),
           ),
         ],
